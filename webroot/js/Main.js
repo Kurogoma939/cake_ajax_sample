@@ -38,7 +38,8 @@ $(document).ready(function () {
         $.ajax({
             type: 'POST', // GET
             datatype: 'json',
-            url: "/marks/changeMark?markid=" + markId, // URLでメソッドを呼び出す URLはドメイン移行
+            // ↓ MarksControllerのchangeMarkメソッドを呼び出し
+            url: "/marks/changeMark", // URLはドメイン以降
             data: {
                 markId: markId,
                 _csrfToken: _csrfToken
@@ -47,6 +48,7 @@ $(document).ready(function () {
                 xhr.setRequestHeader("X-CSRF-Token", _csrfToken);
             },
         })
+            // PHPからレスポンスされたデータを受け取る処理
             .done((data) => {
                 let objectData = JSON.parse(data); // JSON型をObject型へ変換
                 let trumpList = objectData.trumpList; // $response[]で指定した値
@@ -67,6 +69,7 @@ $(document).ready(function () {
                 }
                 trumpSelect.append(selectOptions);
             })
+            // Ajaxの例外処理
             .fail((jqXHR, textStatus, errorThrown) => {
                 // JavaScriptの例外処理
                 console.log(errorThrown);
@@ -121,47 +124,4 @@ $(document).ready(function () {
         return false;
     })
 
-    /*******************************************
-     * Itemsに対する処理
-     *******************************************/
 });
-
-
-$('#trump').on('change', function () {
-    let trumpId = $(this).val(); // セレクトのvalueを受け取り
-    const _csrfToken = $('input[name="_csrfToken"]').val();
-    $.ajax({
-        type: 'POST',
-        datatype: 'json',
-        url: "/marks/changeTrump",
-        data: {
-            trumpId: trumpId,
-            _csrfToken: _csrfToken
-        },
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("X-CSRF-Token", _csrfToken);
-        },
-    })
-        .done((data) => {
-            let check = confirm('データがありました。一括更新していいですか？')
-            if(check === true){
-                $.ajax({
-                    type: 'POST',
-                    datatype: 'json',
-                    url: "/marks/changeTrump2",
-                    data: {
-                        _csrfToken: _csrfToken
-                    },
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("X-CSRF-Token", _csrfToken);
-                    },
-                })
-                    .done(() => {
-                        alert('完了しました');
-                    })
-                return false;
-            }
-        })
-    return false;
-})
-

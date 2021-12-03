@@ -47,7 +47,7 @@ class MarksController extends AppController
     {
         // デバッグ用：かなり細かい情報がわかるので、根本的に詰まった時に良い。
 //        $request = $this->getRequest();
-        // 通常のリクエスト受け取り用
+        // 通常のリクエスト受け取り用（AjaxからPOSTされた値の受け取り）
         $request = $this->request->getData();
         $markId = $request['markId'];
 
